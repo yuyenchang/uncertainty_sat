@@ -29,8 +29,8 @@ The Satellite Orbit Prediction project calculates the orbital position of a sate
 1. **Clone the repository**:
 
     ```bash
-    git clone https://github.com/yourusername/satellite_orbit_prediction.git
-    cd satellite_orbit_prediction
+    git clone https://github.com/yourusername/uncertainty_sat.git
+    cd uncertainty_sat
     ```
 
 2. **Install dependencies**:
@@ -58,7 +58,7 @@ The Satellite Orbit Prediction project calculates the orbital position of a sate
 ## Directory Structure
 
 ```graphql
-satellite_orbit_prediction/
+uncertainty_sat/
 ├── main.py                   # Main script to run the entire pipeline
 ├── satellite_predictor.py    # Handles satellite data generation and preprocessing
 ├── rnn_model.py              # Defines the RNN model architecture
