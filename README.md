@@ -76,6 +76,8 @@ The project includes uncertainty quantification through:
 
 The project generates 3D visualizations of the satellite's predicted orbit with uncertainty bands. Different views highlight positional uncertainty, providing insights into model reliability over time.
 
+<img src="https://github.com/yuyenchang/uncertainty_sat/blob/main/uncertainty_sat.png" alt="Example Image" style="width:80%;"/>
+
 ## License
 
 This project is open-source and available under the MIT License.
