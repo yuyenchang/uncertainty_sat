@@ -63,7 +63,7 @@ satellite_orbit_prediction/
 ├── satellite_predictor.py    # Handles satellite data generation and preprocessing
 ├── rnn_model.py              # Defines the RNN model architecture
 ├── requirements.txt          # List of required packages
-└── uncertainty_iss.png       # Example output plot showing orbit with uncertainty
+└── uncertainty_sat.png       # Example output plot showing orbit with uncertainty
 ```
 
 ## Uncertainty Estimation Methods

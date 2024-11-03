@@ -38,8 +38,8 @@ def plot_predictions(prediction_mean, prediction_uncertainty):
         ax.view_init(elev=elev, azim=azim)
         ax.legend()
     plt.tight_layout()
-    plt.savefig("uncertainty_iss.png")
-    plt.show()
+    plt.savefig("uncertainty_sat.png")
+    # plt.show()
 
 def main():
     # Initialize TLE data and prediction parameters
