@@ -44,13 +44,6 @@ uncertainty_sat/
 └── uncertainty_sat.png       # Example output plot showing orbit with uncertainty
 ```
 
-## Features
-
-- **Satellite Prediction**: Loads TLE data for ISS and generates satellite position predictions.
-- **Uncertainty Estimation**: Adds random Gaussian noise to simulate uncertainty in predictions.
-- **RNN Model with LSTM**: A neural network model that accounts for temporal dependencies in satellite position data.
-- **Visualization**: Plots 3D trajectory predictions with uncertainty bands for various viewpoints.
-
 ## Uncertainty Estimation Methods
 
 The project includes uncertainty quantification through:
