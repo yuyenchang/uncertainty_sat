@@ -8,10 +8,9 @@ class RNNModel:
         """
         Initialize the Recurrent Neural Network (RNN) model using LSTM layers.
         
-        Model Design Decisions:
-        - LSTM layers are used for their ability to capture sequential dependencies, crucial for time-series orbit prediction.
-        - Dropout layers are included to prevent overfitting and to enable uncertainty quantification by simulating different neural network configurations.
-        - A TimeDistributed Dense layer with 3 units at the output layer is used to simultaneously predict X, Y, and Z coordinates.
+        LSTM layers capture sequential dependencies, which are crucial for time-series orbit prediction. 
+        Dropout layers help prevent overfitting and enable uncertainty quantification by simulating different neural network configurations. 
+        A TimeDistributed Dense layer with 3 units at the output layer predicts X, Y, and Z coordinates simultaneously.
         """
         self.model = models.Sequential([
             layers.LSTM(64, return_sequences=True, input_shape=input_shape),  # First LSTM layer with 64 units
@@ -28,10 +27,12 @@ class RNNModel:
         """
         Train the RNN model on provided data.
         
-        Training Parameters:
-        - Batch size of 32 balances memory efficiency and training speed.
-        - Validation split of 33% helps monitor model generalization on unseen data.
-        - The default of 100 epochs allows the model to learn data patterns effectively, though this may be adjusted based on convergence behavior.
+        Parameters:
+        - X (numpy.ndarray): Input features for training.
+        - y (numpy.ndarray): Target labels corresponding to the input features.
+        - epochs (int): Number of training epochs (default is 100).
+        - batch_size (int): Number of samples per gradient update (default is 32), balancing memory efficiency and training speed.
+        - validation_split (float): Fraction of the training data to be used as validation data (default is 0.33), helping monitor generalization on unseen data.
         """
         self.model.fit(X, y, epochs=epochs, batch_size=batch_size, validation_split=validation_split, verbose=0)
 
@@ -39,17 +40,15 @@ class RNNModel:
         """
         Generate predictions with uncertainty by enabling dropout during inference.
         
-        Approach:
-        - Monte Carlo Dropout: By keeping dropout active during inference, we generate a distribution of predictions.
-        - This approach quantifies uncertainty by calculating the mean and standard deviation across multiple predictions.
-        
-        Arguments:
-        - n_iter: Number of iterations to run with dropout enabled for uncertainty estimation.
-        - X_min, X_max: Optional normalization parameters for denormalizing outputs to original scale.
+        Parameters:
+        - input_data (numpy.ndarray): Input data for which predictions are to be made.
+        - n_iter (int): Number of iterations to run with dropout enabled for uncertainty estimation (default is 100).
+        - X_min (float, optional): Minimum value for denormalizing outputs to the original scale.
+        - X_max (float, optional): Maximum value for denormalizing outputs to the original scale.
         
         Returns:
-        - prediction_mean: The mean of the generated predictions, representing the expected outcome.
-        - prediction_uncertainty: The standard deviation, representing uncertainty in the predictions.
+        - prediction_mean (numpy.ndarray): The mean of the generated predictions, representing the expected outcome.
+        - prediction_uncertainty (numpy.ndarray): The standard deviation of the predictions, indicating the uncertainty.
         """
         predictions = [self.model(input_data, training=True) for _ in range(n_iter)]  # Generate predictions with dropout
         predictions = np.stack(predictions, axis=0)  # Stack predictions to calculate statistics

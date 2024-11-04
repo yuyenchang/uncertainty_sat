@@ -10,12 +10,13 @@ class SatellitePredictor:
         Initialize SatellitePredictor with TLE data, prediction time settings, and uncertainty parameters.
 
         Parameters:
-        - tle_line1, tle_line2: Two-Line Element (TLE) data for initializing satellite orbital parameters.
-        - start_time: The starting time for generating predictions.
-        - time_interval: The interval between each position prediction.
-        - num_intervals: Total number of prediction intervals.
-        - uncertainty_factor: Factor controlling the magnitude of added noise to simulate real-world uncertainties.
-        - samples: Number of samples to represent uncertainty in position predictions.
+        - tle_line1 (str): First line of the Two-Line Element (TLE) data.
+        - tle_line2 (str): Second line of the Two-Line Element (TLE) data.
+        - start_time (datetime): The starting time for generating predictions.
+        - time_interval (timedelta): The interval between each position prediction.
+        - num_intervals (int): Total number of prediction intervals.
+        - uncertainty_factor (float): Factor controlling the magnitude of added noise to simulate real-world uncertainties.
+        - samples (int): Number of samples to represent uncertainty in position predictions.
         """
         self.satellite = Satrec.twoline2rv(tle_line1, tle_line2)
         self.start_time = start_time
@@ -27,12 +28,10 @@ class SatellitePredictor:
     def generate_orbital_data(self):
         """
         Generate satellite position data over defined intervals using the SGP4 model.
-
-        - The SGP4 model uses TLE data for satellite position calculation, factoring in orbital mechanics.
-        
+     
         Returns:
-        - positions: Numpy array of satellite positions at each interval.
-        - times: List of timestamps corresponding to each predicted position.
+        - positions (numpy.ndarray): Array of satellite positions at each interval.
+        - times (list): List of timestamps corresponding to each predicted position.
         """
         positions, times = [], []
         for i in range(self.num_intervals):
@@ -48,12 +47,12 @@ class SatellitePredictor:
     def add_uncertainty(self, positions):
         """
         Add uncertainty to position predictions by introducing Gaussian noise.
-
-        - This noise models uncertainties from atmospheric drag, gravitational variations, and other unmodeled factors.
-        - The uncertainty factor controls the noise magnitude relative to each position's value.
         
+        Parameters:
+        - positions (numpy.ndarray): Array of satellite positions.
+
         Returns:
-        - A numpy array of position samples with added noise, simulating prediction uncertainties.
+        - numpy.ndarray: Array of position samples with added noise, simulating prediction uncertainties.
         """
         return positions + np.random.normal(0, self.uncertainty_factor * np.abs(positions),
                                             (self.samples, self.num_intervals, 3))
@@ -61,17 +60,13 @@ class SatellitePredictor:
     def preprocess_data(self, positions_with_uncertainty):
         """
         Prepare data for model training by creating features and targets, then normalizing them.
-
-        - Features (X): All but the last position in each sample.
-        - Targets (y): All but the first position in each sample, enabling the model to learn sequential movement.
-        
-        Normalization:
-        - Min-Max scaling is used to bring feature and target values into a consistent range, aiding model convergence.
-        
+     
         Returns:
-        - X, y: Normalized features and targets.
-        - X_min, X_max, y_min, y_max: Min-Max normalization factors, needed for reversing normalization in predictions.
-        """
+        - X (numpy.ndarray): Normalized features.
+        - y (numpy.ndarray): Normalized targets.
+        - (X_min, X_max) (tuple): Min-Max normalization factors for features.
+        - (y_min, y_max) (tuple): Min-Max normalization factors for targets.
+         """
         X = positions_with_uncertainty[:, :-1]
         y = positions_with_uncertainty[:, 1:]
 

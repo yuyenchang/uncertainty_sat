@@ -37,9 +37,9 @@ def plot_predictions(prediction_mean, prediction_uncertainty):
                     color="gray", alpha=0.3, label="Uncertainty" if i == 0 else "")
         
         # Label axes and set specific view angles for each subplot
-        ax.set_xlabel("X Position (km)")
-        ax.set_ylabel("Y Position (km)")
-        ax.set_zlabel("Z Position (km)")
+        ax.set_xlabel("X Position [km]")
+        ax.set_ylabel("Y Position [km]")
+        ax.set_zlabel("Z Position [km]")
         ax.set_title(titles[idx])
         ax.view_init(elev=elev, azim=azim)
         ax.legend()
@@ -50,31 +50,24 @@ def plot_predictions(prediction_mean, prediction_uncertainty):
 def main():
     """
     Main function to set up data, train a model, and visualize predictions with uncertainty.
-    
-    This includes initializing TLE data for satellite position prediction, processing data
-    with uncertainty, training an RNN model for sequential prediction, and visualizing the results.
     """
-    # Two-Line Element (TLE) data contains essential satellite orbital parameters
-    # for accurate positioning in space. Choice of TLE data ensures reliability in satellite tracking.
+    # TLE data provides essential satellite orbital parameters for reliable tracking in space.    
     tle_line1 = "1 25544U 98067A   20335.54791667  .00001264  00000-0  29623-4 0  9991"
     tle_line2 = "2 25544  51.6441  21.0125 0001399  92.4587 267.6706 15.49346029257441"
     start_time = datetime(2024, 1, 1, 0, 0, 0)
     time_interval = timedelta(minutes=10)  # 10-minute interval to capture short-term movements
 
-    # Set up SatellitePredictor to generate data with SGP4 model (assumes minimal drag and stable orbit).
+    # Set up SatellitePredictor to generate data with SGP4 model.
     predictor = SatellitePredictor(tle_line1, tle_line2, start_time, time_interval, num_intervals=1000)
     positions, _ = predictor.generate_orbital_data()
     positions_with_uncertainty = predictor.add_uncertainty(positions)  # Adding noise to model uncertainties in real-world scenarios
     X, y, (X_min, X_max), (y_min, y_max) = predictor.preprocess_data(positions_with_uncertainty)  # Normalize data
 
     # Set up and train an RNN model to learn from sequential satellite data
-    # Choice of model architecture (LSTM layers) is critical for capturing time dependencies in orbital data.
-    # LSTMs are particularly suited for such data as they retain important information across time steps.
     rnn_model = RNNModel(input_shape=(X.shape[1], X.shape[2]))
     rnn_model.train(X, y)
 
-    # Generate predictions with uncertainty estimation
-    # Model employs dropout to estimate uncertainty by sampling multiple predictions, enhancing prediction reliability.
+    # Generate predictions with uncertainty estimation using dropout to sample multiple predictions and enhance reliability.
     sample_input = X[:1]  # Take a sample from data for prediction
     prediction_mean, prediction_uncertainty = rnn_model.predict_with_uncertainty(sample_input, X_min=X_min, X_max=X_max)
     plot_predictions(prediction_mean, prediction_uncertainty)
