@@ -6,49 +6,81 @@ from datetime import datetime, timedelta
 
 class SatellitePredictor:
     def __init__(self, tle_line1, tle_line2, start_time, time_interval, num_intervals, uncertainty_factor=0.1, samples=100):
-        # Initialize the satellite object using Two-Line Element (TLE) data
+        """
+        Initialize SatellitePredictor with TLE data, prediction time settings, and uncertainty parameters.
+
+        Parameters:
+        - tle_line1, tle_line2: Two-Line Element (TLE) data for initializing satellite orbital parameters.
+        - start_time: The starting time for generating predictions.
+        - time_interval: The interval between each position prediction.
+        - num_intervals: Total number of prediction intervals.
+        - uncertainty_factor: Factor controlling the magnitude of added noise to simulate real-world uncertainties.
+        - samples: Number of samples to represent uncertainty in position predictions.
+        """
         self.satellite = Satrec.twoline2rv(tle_line1, tle_line2)
-        # Set the starting time for the predictions
         self.start_time = start_time
-        # Define the time interval between predictions
         self.time_interval = time_interval
-        # Set the number of intervals for which predictions are to be made
         self.num_intervals = num_intervals
-        # Define the uncertainty factor for adding noise to the predictions
         self.uncertainty_factor = uncertainty_factor
-        # Set the number of samples to generate uncertainty data
         self.samples = samples
 
     def generate_orbital_data(self):
-        # Generate orbital position data over specified time intervals
+        """
+        Generate satellite position data over defined intervals using the SGP4 model.
+
+        - The SGP4 model uses TLE data for satellite position calculation, factoring in orbital mechanics.
+        - TLE-based predictions may not fully capture effects of non-gravitational forces, limiting absolute accuracy.
+        
+        Returns:
+        - positions: Numpy array of satellite positions at each interval.
+        - times: List of timestamps corresponding to each predicted position.
+        """
         positions, times = [], []
         for i in range(self.num_intervals):
-            # Calculate the current time for this interval
-            current_time = self.start_time + i * self.time_interval
-            # Convert the current time to Julian Date (JD) and fraction
+            current_time = self.start_time + i * self.time_interval  # Calculate time for current interval
             jd, fr = jday(current_time.year, current_time.month, current_time.day,
-                          current_time.hour, current_time.minute, current_time.second)
-            # Get the satellite's position at the specified JD and fraction
-            error_code, position, _ = self.satellite.sgp4(jd, fr)
-            if error_code == 0:  # Check if the calculation was successful (error code 0 means success)
-                positions.append(position)  # Store the position
-                times.append(current_time)    # Store the corresponding time
-        return np.array(positions), times  # Return the positions as a numpy array and the times
+                          current_time.hour, current_time.minute, current_time.second)  # Convert to Julian date
+            error_code, position, _ = self.satellite.sgp4(jd, fr)  # Get position using SGP4
+            if error_code == 0:  # If calculation is successful
+                positions.append(position)
+                times.append(current_time)
+        return np.array(positions), times
 
     def add_uncertainty(self, positions):
-        # Add uncertainty to the positions by generating random noise
-        return positions + np.random.normal(0, self.uncertainty_factor * np.abs(positions), (self.samples, self.num_intervals, 3))
+        """
+        Add uncertainty to position predictions by introducing Gaussian noise.
+
+        - This noise models uncertainties from atmospheric drag, gravitational variations, and other unmodeled factors.
+        - The uncertainty factor controls the noise magnitude relative to each position's value.
+        
+        Returns:
+        - A numpy array of position samples with added noise, simulating prediction uncertainties.
+        """
+        return positions + np.random.normal(0, self.uncertainty_factor * np.abs(positions),
+                                            (self.samples, self.num_intervals, 3))
 
     def preprocess_data(self, positions_with_uncertainty):
-        # Split the data into features (X) and targets (y) for training
-        X = positions_with_uncertainty[:, :-1]  # All but the last position as features
-        y = positions_with_uncertainty[:, 1:]    # All but the first position as targets
+        """
+        Prepare data for model training by creating features and targets, then normalizing them.
 
-        # Normalize the data using Min-Max normalization
-        X_min, X_max = np.min(X, axis=(0, 1)), np.max(X, axis=(0, 1))  # Get min and max for features
-        y_min, y_max = np.min(y, axis=(0, 1)), np.max(y, axis=(0, 1))  # Get min and max for targets
+        - Features (X): All but the last position in each sample.
+        - Targets (y): All but the first position in each sample, enabling the model to learn sequential movement.
+        
+        Normalization:
+        - Min-Max scaling is used to bring feature and target values into a consistent range, aiding model convergence.
+        
+        Returns:
+        - X, y: Normalized features and targets.
+        - X_min, X_max, y_min, y_max: Min-Max normalization factors, needed for reversing normalization in predictions.
+        """
+        X = positions_with_uncertainty[:, :-1]
+        y = positions_with_uncertainty[:, 1:]
 
-        X = (X - X_min) / (X_max - X_min)  # Normalize features
-        y = (y - y_min) / (y_max - y_min)  # Normalize targets
+        X_min, X_max = np.min(X, axis=(0, 1)), np.max(X, axis=(0, 1))
+        y_min, y_max = np.min(y, axis=(0, 1)), np.max(y, axis=(0, 1))
 
-        return X, y, (X_min, X_max), (y_min, y_max)  # Return normalized data and normalization factors
+        X = (X - X_min) / (X_max - X_min)
+        y = (y - y_min) / (y_max - y_min)
+
+        return X, y, (X_min, X_max), (y_min, y_max)
+
