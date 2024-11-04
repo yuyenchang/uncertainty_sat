@@ -29,7 +29,6 @@ class SatellitePredictor:
         Generate satellite position data over defined intervals using the SGP4 model.
 
         - The SGP4 model uses TLE data for satellite position calculation, factoring in orbital mechanics.
-        - TLE-based predictions may not fully capture effects of non-gravitational forces, limiting absolute accuracy.
         
         Returns:
         - positions: Numpy array of satellite positions at each interval.
