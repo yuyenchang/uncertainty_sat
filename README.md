@@ -2,13 +2,6 @@
 
 This project provides a model to predict the orbital position of a satellite, specifically the International Space Station (ISS), using Two-Line Element (TLE) data. It uses a Recurrent Neural Network (RNN) with LSTM layers to predict future satellite positions and includes uncertainty estimation to account for prediction uncertainties.
 
-## Features
-
-- **Satellite Prediction**: Loads TLE data for ISS and generates satellite position predictions.
-- **Uncertainty Estimation**: Adds random Gaussian noise to simulate uncertainty in predictions.
-- **RNN Model with LSTM**: A neural network model that accounts for temporal dependencies in satellite position data.
-- **Visualization**: Plots 3D trajectory predictions with uncertainty bands for various viewpoints.
-
 ## Installation
 
 1. **Clone the repository**:
@@ -50,6 +43,13 @@ uncertainty_sat/
 ├── requirements.txt          # List of required packages
 └── uncertainty_sat.png       # Example output plot showing orbit with uncertainty
 ```
+
+## Features
+
+- **Satellite Prediction**: Loads TLE data for ISS and generates satellite position predictions.
+- **Uncertainty Estimation**: Adds random Gaussian noise to simulate uncertainty in predictions.
+- **RNN Model with LSTM**: A neural network model that accounts for temporal dependencies in satellite position data.
+- **Visualization**: Plots 3D trajectory predictions with uncertainty bands for various viewpoints.
 
 ## Uncertainty Estimation Methods
 
