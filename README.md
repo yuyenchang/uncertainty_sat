@@ -48,7 +48,7 @@ uncertainty_sat/
 
 This project includes the following method for uncertainty estimation:
 
-- **Monte Carlo Dropout**
+- **Monte Carlo (MC) Dropout**
 
 ## Results
 
