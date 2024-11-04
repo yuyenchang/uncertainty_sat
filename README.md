@@ -46,9 +46,9 @@ uncertainty_sat/
 
 ## Uncertainty Estimation Methods
 
-The project includes uncertainty quantification through:
+This project includes the following method for uncertainty estimation:
 
-- **Monte Carlo Dropout**: Enables dropout during inference to estimate uncertainty by generating multiple predictions.
+- **Monte Carlo Dropout**: Uses Monte Carlo dropout to randomly drop neurons and average forward passes for uncertainty.
 
 ## Results
 
