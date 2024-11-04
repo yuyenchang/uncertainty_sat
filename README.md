@@ -48,7 +48,7 @@ uncertainty_sat/
 
 This project includes the following method for uncertainty estimation:
 
-- **Monte Carlo Dropout**: Uses Monte Carlo dropout to randomly drop neurons and average forward passes for uncertainty.
+- **Monte Carlo Dropout**
 
 ## Results
 
