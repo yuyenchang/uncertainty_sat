@@ -2,21 +2,6 @@
 
 This project provides a model to predict the orbital position of a satellite, specifically the International Space Station (ISS), using Two-Line Element (TLE) data. It uses a Recurrent Neural Network (RNN) with LSTM layers to predict future satellite positions and includes uncertainty estimation to account for prediction uncertainties.
 
-## Table of Contents
-
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Directory Structure](#directory-structure)
-- [Uncertainty Estimation Methods](#uncertainty-estimation-methods)
-- [Results](#results)
-- [License](#license)
-
-## Project Overview
-
-The Satellite Orbit Prediction project calculates the orbital position of a satellite over a specified period using TLE data. This project implements an RNN model that leverages LSTM layers for satellite position prediction, with added uncertainty quantification through dropout to simulate uncertanties in the satellite’s trajectory.
-
 ## Features
 
 - **Satellite Prediction**: Loads TLE data for ISS and generates satellite position predictions.
@@ -28,32 +13,32 @@ The Satellite Orbit Prediction project calculates the orbital position of a sate
 
 1. **Clone the repository**:
 
-    ```bash
-    git clone https://github.com/yourusername/uncertainty_sat.git
-    cd uncertainty_sat
-    ```
+```bash
+git clone https://github.com/yourusername/uncertainty_sat.git
+cd uncertainty_sat
+```
 
 2. **Install dependencies**:
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+pip install -r requirements.txt
+```
 
-    Ensure `requirements.txt` includes necessary packages such as `numpy`, `tensorflow`, `matplotlib`, and `sgp4`.
+(The code was written in Python 3.9.1.)
 
 ## Usage
 
 1. **Initialize and Configure Parameters**:
    
-   Update TLE data, starting time, and time interval in `main.py`.
+Update TLE data, starting time, and time interval in `main.py`.
 
 2. **Run the Script**:
 
-    ```bash
-    python main.py
-    ```
+```bash
+python main.py
+```
 
-    The script will generate satellite positions, train an RNN model, and visualize predictions with uncertainty.
+The script will generate satellite positions, train an RNN model, and visualize predictions with uncertainty.
 
 ## Directory Structure
 
@@ -74,7 +59,7 @@ The project includes uncertainty quantification through:
 
 ## Results
 
-The project generates 3D visualizations of the satellite's predicted orbit with uncertainty bands. Different views highlight positional uncertainty, providing insights into model reliability over time.
+The project generates 3D visualizations of the satellite's orbit with uncertainty bands, highlighting positional uncertainty and model reliability.
 
 <img src="https://github.com/yuyenchang/uncertainty_sat/blob/main/uncertainty_sat.png" alt="Example Image" style="width:80%;"/>
 
