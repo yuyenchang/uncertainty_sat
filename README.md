@@ -1,4 +1,4 @@
-# Uncertainty Quantification for Satellite Orbits
+# Uncertainty Quantification in Satellite Orbits
 
 This project provides a model to predict the orbital position of a satellite, specifically the International Space Station (ISS), using Two-Line Element (TLE) data. It uses a Recurrent Neural Network (RNN) with LSTM layers to predict future satellite positions and includes uncertainty estimation to account for prediction uncertainties.
 
